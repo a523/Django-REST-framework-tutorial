@@ -17,13 +17,15 @@ class SnippetViewSet(viewsets.ModelViewSet):
     """
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]  # 权限
 
+    # 通过装饰器自定义路径和视图，默认是get方法，可以method='XXX'，修改
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):
         snippet = self.get_object()
         return Response(snippet.highlighted)
 
+    # 自定义保存对象的方法
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
